@@ -44,11 +44,11 @@ Scopul proiectului este de a realiza un program care primeste fisiere CSV pe car
 5. Sprint 4 - 07.01.2022
 6. Demo 2 - 9.01.2022
 
+## Project Manager
+1. Porumb Andrei-Cornel
+
 ## Team Lead
 1. Coderie Andrei-Lucian
-
-## Product Manager
-1. Porumb Andrei-Cornel
 
 ## Quality Assurance
 1. Lupuleasa Marian-Paul
