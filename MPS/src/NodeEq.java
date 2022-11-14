@@ -39,6 +39,9 @@ public class NodeEq {
                 num++;
             }
         }
+        if (num == 0) {
+            return 0;
+        }
         return sum / num;
     }
 
@@ -50,6 +53,9 @@ public class NodeEq {
                 sum += arg;
                 num++;
             }
+        }
+        if (num == 0) {
+            return 0;
         }
         return sum / num;
     }
@@ -67,6 +73,9 @@ public class NodeEq {
                 pos = 0;
             }
         }
+        if (num == 0) {
+            return 0;
+        }
         return sum / num;
     }
 
@@ -82,6 +91,9 @@ public class NodeEq {
             } else {
                 pos = 1;
             }
+        }
+        if (num == 0) {
+            return 0;
         }
         return sum / num;
     }

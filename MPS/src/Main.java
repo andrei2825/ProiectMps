@@ -4,8 +4,7 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
         ReadCSV readCSV = new ReadCSV();
-//        open directory
-        String dir = "src/resources/Test";
+        String dir = "src/resources/Train";
         File folder = new File(dir);
         File[] listOfFiles = folder.listFiles();
         int complexity = 20;
@@ -16,11 +15,10 @@ public class Main {
                 readCSV.read(file.getAbsolutePath());
                 ArrayList<Double> thresholds = readCSV.getThresholds();
                 ArrayList<Double> FMeasure = readCSV.getFMeasure();
-                CreateTree createTree = new CreateTree(thresholds);
+                CreateTree createTree = new CreateTree();
                 for (int i = 0; i < complexity; i++) {
                     ArrayList<Double> selectedThresholds = createTree.selectThresholds(thresholds);
                     double node = createTree.createNode(selectedThresholds);
-                    System.out.println("Complexity: " + i + " " + file.getName() + " " + node);
                     thresholds.add(node);
 
                 }

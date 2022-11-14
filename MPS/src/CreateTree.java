@@ -3,28 +3,23 @@ import java.io.*;
 
 
 public class CreateTree {
-    private final int numOfThresholds;
-
-    public CreateTree(ArrayList<Double> data) {
-        this.numOfThresholds = data.size();
-    }
-
-
     public ArrayList<Double> selectThresholds(ArrayList<Double> data) {
+        int numOfThresholds = data.size();
         ArrayList<Double> thresholds = new ArrayList<>();
         Random rand = new Random();
+//      coppy data to new array
+        ArrayList<Double> dataCopy = new ArrayList<>();
+        for (Double datum : data) {
+            dataCopy.add(datum);
+        }
         int num = rand.nextInt(numOfThresholds);
         while (num < 2) {
             num = rand.nextInt(numOfThresholds);
         }
         for (int i = 0; i < num; i++) {
-            int index = rand.nextInt(numOfThresholds);
-            if (!thresholds.contains(data.get(index))) {
-                thresholds.add(data.get(index));
-            }
-            else {
-                i--;
-            }
+            int index = rand.nextInt(0, dataCopy.size());
+            thresholds.add(dataCopy.get(index));
+            dataCopy.remove(index);
         }
         return thresholds;
     }
