@@ -35,4 +35,11 @@ public class ReadCSV {
         }
     }
 
+    public ArrayList<Double> getThresholds() {
+        return thresholds;
+    }
+
+    public ArrayList<Double> getFMeasure() {
+        return FMeasure;
+    }
 }

@@ -3,16 +3,14 @@ import java.io.*;
 
 
 public class CreateTree {
-    private ArrayList<Double> data;
-    private int numOfThresholds;
+    private final int numOfThresholds;
 
     public CreateTree(ArrayList<Double> data) {
-        this.data = data;
         this.numOfThresholds = data.size();
     }
 
 
-    public ArrayList<Double> selectThresholds() {
+    public ArrayList<Double> selectThresholds(ArrayList<Double> data) {
         ArrayList<Double> thresholds = new ArrayList<>();
         Random rand = new Random();
         int num = rand.nextInt(numOfThresholds);
@@ -34,7 +32,7 @@ public class CreateTree {
     public double createNode(ArrayList<Double> thresholds) {
         double node= 0;
         Random rand = new Random();
-        int num = rand.nextInt(7);
+        int num = rand.nextInt(1,7);
         NodeEq nodeEq = new NodeEq();
         node = nodeEq.pick(num, thresholds);
         return node;
