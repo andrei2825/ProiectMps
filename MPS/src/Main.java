@@ -1,35 +1,49 @@
-import java.io.File;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class Main {
     public static void main(String[] args) {
+        try {
+            FileWriter fileWriter = new FileWriter("src/resources/fMeasures.txt", false);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            bufferedWriter.write("");
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         ReadCSV readCSV = new ReadCSV();
-        String dir = "src/resources/Train";
+        String dir = "src/resources/global_data";
         File folder = new File(dir);
-        File[] listOfFiles = folder.listFiles();
         int complexity = 20;
-        double idealThreshold = 0;
-        ArrayList<Double> fMeasures = new ArrayList<>();
-        for (File file : listOfFiles) {
-            if (file.isFile()) {
-                readCSV.read(file.getAbsolutePath());
-                ArrayList<Double> thresholds = readCSV.getThresholds();
-                ArrayList<Double> FMeasure = readCSV.getFMeasure();
-                CreateTree createTree = new CreateTree();
-                for (int i = 0; i < complexity; i++) {
-                    ArrayList<Double> selectedThresholds = createTree.selectThresholds(thresholds);
-                    double node = createTree.createNode(selectedThresholds);
-                    thresholds.add(node);
 
-                }
-                idealThreshold = thresholds.get(thresholds.size() - 1);
-                int index = (int) Math.floor(idealThreshold*255);
-                fMeasures.add(FMeasure.get(index));
+        int processors = Runtime.getRuntime().availableProcessors();
+        ExecutorService executor = Executors.newFixedThreadPool(processors);
+        FileProcessor fileProcessor = new FileProcessor(complexity, folder);
+        fileProcessor.processFileData(folder, executor);
+        executor.shutdown();
+        ArrayList<Double> fMeasures = readCSV.getFMeasure();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("src/resources/fMeasures.txt"));
+            String line = br.readLine();
+            while (line != null) {
+                fMeasures.add(Double.parseDouble(line));
+                line = br.readLine();
             }
+            br.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found: " + "src/resources/fMeasures.txt");
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + "src/resources/fMeasures.txt");
         }
         double mean = 0;
-        for (int i = 0; i < fMeasures.size(); i++) {
-            mean += fMeasures.get(i);
+        for (Double fMeasure : fMeasures) {
+            mean += fMeasure;
         }
         mean = mean/fMeasures.size();
         System.out.println("Mean: " + mean);
