@@ -1,16 +1,21 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.Executor;
 
 public class FileProcessor implements Runnable{
     private final int complexity;
     ArrayList<Double> fMeasures;
     private final File file;
+    private ArrayList<ArrayList<Integer>> tree;
+    private ArrayList<Integer> eqs;
 
-    public FileProcessor(int complexity , File file) {
+    public FileProcessor(int complexity , File file, ArrayList<ArrayList<Integer>> tree, ArrayList<Integer> eqs) {
         this.complexity = complexity;
         this.fMeasures = new ArrayList<>();
         this.file = file;
+        this.tree = tree;
+        this.eqs = eqs;
     }
 
     @Override
@@ -22,8 +27,8 @@ public class FileProcessor implements Runnable{
         ArrayList<Double> FMeasure = readCSV.getFMeasure();
         CreateTree createTree = new CreateTree();
         for (int i = 0; i < complexity; i++) {
-            ArrayList<Double> selectedThresholds = createTree.selectThresholds(thresholds);
-            double node = createTree.createNode(selectedThresholds);
+            ArrayList<Double> selectedThresholds = createTree.selectThresholds(thresholds, tree.get(i));
+            double node = createTree.createNode(selectedThresholds, eqs.get(i));
             thresholds.add(node);
         }
         idealThreshold = thresholds.get(thresholds.size() - 1);
@@ -41,13 +46,11 @@ public class FileProcessor implements Runnable{
 
     public void processFileData(File dir, Executor executor) {
         File[] listOfFiles = dir.listFiles();
-        int fileIndex = 0;
         assert listOfFiles != null;
+
         for (File file : listOfFiles) {
             if (file.isFile()) {
-                System.out.println("File " + fileIndex);
-                fileIndex++;
-                executor.execute(new FileProcessor(complexity, file));
+                executor.execute(new FileProcessor(complexity, file, tree, eqs));
             }
         }
     }
