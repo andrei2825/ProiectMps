@@ -1,16 +1,12 @@
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 public class Main {
     public static void main(String[] args) {
         File treeModel = new File("src/resources/treeModel.txt");
         double oldMean = 0;
-        while (oldMean < 80) {
+        while (oldMean < 95) {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(treeModel.getPath()));
                 String line = br.readLine();
@@ -38,15 +34,21 @@ public class Main {
             ReadCSV readCSV = new ReadCSV();
             String dir = "src/resources/global_data";
             File folder = new File(dir);
-            int complexity = 20;
+            Random r = new Random();
+            int complexity = r.nextInt(5, 51);
+            System.out.println(complexity);
             RandomTree randomTree = new RandomTree(complexity);
             randomTree.createTree();
 
             int processors = Runtime.getRuntime().availableProcessors();
+
+            long startTime = System.nanoTime();
             ExecutorService executor = Executors.newFixedThreadPool(processors);
             FileProcessor fileProcessor = new FileProcessor(complexity, folder, randomTree.getTree(), randomTree.getEqs());
             fileProcessor.processFileData(folder, executor);
             executor.shutdown();
+            long endTime = System.nanoTime();
+            System.out.println("Time: " + (endTime - startTime) / 1000000000.0);
             ArrayList<Double> fMeasures = readCSV.getFMeasure();
             try {
                 BufferedReader br = new BufferedReader(new FileReader("src/resources/fMeasures.txt"));
