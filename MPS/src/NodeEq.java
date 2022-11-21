@@ -107,7 +107,7 @@ public class NodeEq {
                 res += args.get(i+1) - args.get(i);
             }
         }
-        if (res > 1) {
+        while (res > 1) {
             res = res - 1;
         }
         return res;
