@@ -2,10 +2,17 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.awt.*;
+import javax.swing.*;
+import java.awt.geom.*;
 public class Main {
     public static void main(String[] args) {
         File treeModel = new File("src/resources/treeModel.txt");
         double oldMean = 0;
+        int sampleSize = 100;
+        int sampleCount = 0;
+        ArrayList<Integer> complexities = new ArrayList<>();
+        ArrayList<Double> means = new ArrayList<>();
         while (oldMean < 95) {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(treeModel.getPath()));
@@ -99,7 +106,37 @@ public class Main {
             } else {
                 System.out.println("The old tree is better");
             }
+            complexities.add(complexity);
+            means.add(mean);
+            sampleCount += 1;
+            if (sampleCount == sampleSize) {
+                System.out.println("Sample size reached");
+                break;
+            }
         }
+//        create hashmap of complexity and mean
+        LinkedHashMap<Integer, Double> data = new LinkedHashMap<>();
+        for (int i = 0; i < complexities.size(); i++) {
+            if (data.containsKey(complexities.get(i))) {
+                if (means.get(i) > data.get(complexities.get(i))) {
+                    data.put(complexities.get(i), means.get(i));
+                } else {
+                    continue;
+                }
+            } else {
+                data.put(complexities.get(i), means.get(i));
+            }
+        }
+        JFrame frame = new JFrame("Complexity vs Mean");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(new Plot(data));
+        frame.setSize(800, 800);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+
+
 
     }
+
+
 }

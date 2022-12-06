@@ -41,10 +41,19 @@ public class NodeEq {
         }
     }
 //range
+//    public double f4 (ArrayList<Double> args) {
+//        double max = Collections.max(args);
+//        double min = Collections.min(args);
+//        return (max + min)/2;
+//    }
+
     public double f4 (ArrayList<Double> args) {
-        double max = Collections.max(args);
-        double min = Collections.min(args);
-        return (max - min);
+        double sum = 0;
+//        harmonic mean
+        for (double arg : args) {
+            sum += 1/arg;
+        }
+        return args.size()/sum;
     }
 
 

@@ -27,7 +27,7 @@ public class RandomTree {
         tree.add(thresholds);
         for (int i = 0; i < numOfNodes; i++) {
             ArrayList<Integer> node = new ArrayList<>();
-            int num = rand.nextInt(1,4);
+            int num = rand.nextInt(1,5);
             eqs.add(num);
             ArrayList<Integer> nodes = new ArrayList<>();
             numOfThresholds = rand.nextInt(2, numOfPoints);
