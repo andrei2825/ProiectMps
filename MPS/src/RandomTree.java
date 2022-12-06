@@ -10,13 +10,13 @@ public class RandomTree {
         this.numOfNodes = numOfNodes;
         this.tree = new ArrayList<>();
         this.eqs = new ArrayList<>();
-        numOfPoints = 14;
+        numOfPoints = 15;
     }
 
     public void createTree() {
         ArrayList<Integer> thresholds = new ArrayList<>();
         Random rand = new Random();
-        int numOfThresholds = rand.nextInt(2, 15);
+        int numOfThresholds = rand.nextInt(2, numOfPoints+1);
         for (int i = 0; i < numOfThresholds; i++) {
             int num = rand.nextInt(0, numOfPoints);
             while (thresholds.contains(num)) {
@@ -27,10 +27,10 @@ public class RandomTree {
         tree.add(thresholds);
         for (int i = 0; i < numOfNodes; i++) {
             ArrayList<Integer> node = new ArrayList<>();
-            int num = rand.nextInt(1,7);
+            int num = rand.nextInt(1,5);
             eqs.add(num);
             ArrayList<Integer> nodes = new ArrayList<>();
-            numOfThresholds = rand.nextInt(2, 15);
+            numOfThresholds = rand.nextInt(2, numOfPoints);
             for (int j = 0; j < numOfThresholds; j++) {
                 num = rand.nextInt(0, numOfPoints);
                 while (nodes.contains(num)) {
