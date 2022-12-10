@@ -4,6 +4,7 @@ import java.util.*;
 public class ReadCSV {
     private ArrayList<Double> thresholds;
     private ArrayList<Double> FMeasure;
+    public double idealThreshold;
 
     public ReadCSV() {
         this.thresholds = new ArrayList<>();
@@ -17,7 +18,8 @@ public class ReadCSV {
             while (line != null) {
                 String[] values = line.split(",");
                 if (values.length == 16) {
-                    for (int i = 0; i < values.length; i++) {
+                    idealThreshold = Double.parseDouble(values[0]);
+                    for (int i = 1; i < values.length; i++) {
                         thresholds.add(Double.parseDouble(values[i]));
                     }
                 } else if (values.length == 256) {

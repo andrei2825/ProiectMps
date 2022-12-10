@@ -1,7 +1,4 @@
 import java.util.*;
-import java.io.*;
-
-
 public class CreateTree {
     public ArrayList<Double> selectThresholds(ArrayList<Double> data, ArrayList<Integer> indexes) {
         int numOfThresholds = data.size();
