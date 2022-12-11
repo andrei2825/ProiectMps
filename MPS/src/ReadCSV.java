@@ -15,15 +15,17 @@ public class ReadCSV {
         try {
             BufferedReader br = new BufferedReader(new FileReader(fileName));
             String line = br.readLine();
+            String[] values;
+            int i;
             while (line != null) {
-                String[] values = line.split(",");
+                values = line.split(",");
                 if (values.length == 16) {
                     idealThreshold = Double.parseDouble(values[0]);
-                    for (int i = 1; i < values.length; i++) {
+                    for (i = 1; i < values.length; i++) {
                         thresholds.add(Double.parseDouble(values[i]));
                     }
                 } else if (values.length == 256) {
-                    for (int i = 0; i < values.length; i++) {
+                    for (i = 0; i < values.length; i++) {
                         FMeasure.add(Double.parseDouble(values[i]));
                     }
                 }
