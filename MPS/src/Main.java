@@ -13,11 +13,32 @@ public class Main {
         int sampleCount = 0;
         ArrayList<Integer> complexities = new ArrayList<>();
         ArrayList<Double> means = new ArrayList<>();
+        BufferedReader br;
+        String line;
+        String previousLine;
+        FileWriter fileWriter;
+        BufferedWriter bufferedWriter;
+        ReadCSV readCSV;
+        String dir;
+        File folder;
+        Random r;
+        int complexity;
+        RandomTree randomTree;
+        int processors;
+        long startTime;
+        ExecutorService executor;
+        FileProcessor fileProcessor;
+        long endTime;
+        ArrayList<Double> fMeasures;
+        double mean;
+        int i;
+        LinkedHashMap<Integer, Double> data;
         while (oldMean < 95) {
+            System.out.println("Sample count: " + sampleCount);
             try {
-                BufferedReader br = new BufferedReader(new FileReader(treeModel.getPath()));
-                String line = br.readLine();
-                String previousLine = "";
+                br = new BufferedReader(new FileReader(treeModel.getPath()));
+                line = br.readLine();
+                previousLine = "";
                 while (line != null) {
                     previousLine = line;
                     line = br.readLine();
@@ -31,35 +52,37 @@ public class Main {
             }
 //      Clear the file of fMeasures
             try {
-                FileWriter fileWriter = new FileWriter("src/resources/fMeasures.txt", false);
-                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                fileWriter = new FileWriter("src/resources/fMeasures.txt", false);
+                bufferedWriter = new BufferedWriter(fileWriter);
                 bufferedWriter.write("");
                 bufferedWriter.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            ReadCSV readCSV = new ReadCSV();
-            String dir = "src/resources/global_data";
-            File folder = new File(dir);
-            Random r = new Random();
-            int complexity = r.nextInt(5, 51);
+            readCSV = new ReadCSV();
+            dir = "src/resources/global_data";
+            folder = new File(dir);
+            r = new Random();
+            complexity = r.nextInt(5, 51);
             System.out.println(complexity);
-            RandomTree randomTree = new RandomTree(complexity);
+            randomTree = new RandomTree(complexity);
             randomTree.createTree();
 
-            int processors = Runtime.getRuntime().availableProcessors();
 
-            long startTime = System.nanoTime();
-            ExecutorService executor = Executors.newFixedThreadPool(processors);
-            FileProcessor fileProcessor = new FileProcessor(complexity, folder, randomTree.getTree(), randomTree.getEqs());
+
+            processors = Runtime.getRuntime().availableProcessors();
+
+            startTime = System.nanoTime();
+            executor = Executors.newFixedThreadPool(processors);
+            fileProcessor = new FileProcessor(complexity, folder, randomTree.getTree(), randomTree.getEqs());
             fileProcessor.processFileData(folder, executor);
             executor.shutdown();
-            long endTime = System.nanoTime();
+            endTime = System.nanoTime();
             System.out.println("Time: " + (endTime - startTime) / 1000000000.0);
-            ArrayList<Double> fMeasures = readCSV.getFMeasure();
+            fMeasures = readCSV.getFMeasure();
             try {
-                BufferedReader br = new BufferedReader(new FileReader("src/resources/fMeasures.txt"));
-                String line = br.readLine();
+                br = new BufferedReader(new FileReader("src/resources/fMeasures.txt"));
+                line = br.readLine();
                 while (line != null) {
                     fMeasures.add(Double.parseDouble(line));
                     line = br.readLine();
@@ -70,7 +93,7 @@ public class Main {
             } catch (IOException e) {
                 System.out.println("Error reading file: " + "src/resources/fMeasures.txt");
             }
-            double mean = 0;
+            mean = 0;
             for (Double fMeasure : fMeasures) {
                 mean += fMeasure;
             }
@@ -81,18 +104,18 @@ public class Main {
             if (mean >= oldMean) {
 //        Clear the file of treeModel
                 try {
-                    FileWriter fileWriter = new FileWriter(treeModel.getPath(), false);
-                    BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                    fileWriter = new FileWriter(treeModel.getPath(), false);
+                    bufferedWriter = new BufferedWriter(fileWriter);
                     bufferedWriter.write("");
                     bufferedWriter.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 try {
-                    FileWriter fileWriter = new FileWriter(treeModel.getPath(), true);
-                    BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                    fileWriter = new FileWriter(treeModel.getPath(), true);
+                    bufferedWriter = new BufferedWriter(fileWriter);
                     bufferedWriter.write("Thresholds: " + randomTree.getTree().get(0) + "\n");
-                    for (int i = 1; i < randomTree.getTree().size(); i++) {
+                    for (i = 1; i < randomTree.getTree().size(); i++) {
                         bufferedWriter.write("Node "+ i + ": " + randomTree.getTree().get(i) + "\n");
                         bufferedWriter.write("Equation: " + randomTree.getEqs().get(i-1) + "\n");
                     }
@@ -115,8 +138,8 @@ public class Main {
             }
         }
 //        create hashmap of complexity and mean
-        LinkedHashMap<Integer, Double> data = new LinkedHashMap<>();
-        for (int i = 0; i < complexities.size(); i++) {
+        data = new LinkedHashMap<>();
+        for (i = 0; i < complexities.size(); i++) {
             if (data.containsKey(complexities.get(i))) {
                 if (means.get(i) > data.get(complexities.get(i))) {
                     data.put(complexities.get(i), means.get(i));

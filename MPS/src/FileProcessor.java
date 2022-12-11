@@ -25,16 +25,22 @@ public class FileProcessor implements Runnable{
         ArrayList<Double> thresholds = readCSV.getThresholds();
         ArrayList<Double> FMeasure = readCSV.getFMeasure();
         CreateTree createTree = new CreateTree();
-        for (int i = 0; i < complexity; i++) {
-            ArrayList<Double> selectedThresholds = createTree.selectThresholds(thresholds, tree.get(i));
-            double node = createTree.createNode(selectedThresholds, eqs.get(i));
+        int i;
+        ArrayList<Double> selectedThresholds;
+        double node;
+        int index;
+        FileWriter fileWriter;
+        BufferedWriter bufferedWriter;
+        for (i = 0; i < complexity; i++) {
+            selectedThresholds = createTree.selectThresholds(thresholds, tree.get(i));
+            node = createTree.createNode(selectedThresholds, eqs.get(i));
             thresholds.add(node);
         }
         idealThreshold = thresholds.get(thresholds.size() - 1);
-        int index = (int) Math.floor(idealThreshold*255);
+        index = (int) Math.floor(idealThreshold*255);
         try {
-            FileWriter fileWriter = new FileWriter("src/resources/fMeasures.txt", true);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            fileWriter = new FileWriter("src/resources/fMeasures.txt", true);
+            bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write(FMeasure.get(index) + "\n");
             bufferedWriter.close();
             fileWriter.close();

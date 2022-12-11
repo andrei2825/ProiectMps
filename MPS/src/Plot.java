@@ -33,15 +33,18 @@ public class Plot extends JPanel {
         int x = 50;
         int y = height - 50;
         g2.drawString("0", 30, y);
-        for (int i = 0; i <= 100; i+=10) {
+        int i;
+        for (i = 0; i <= 100; i+=10) {
             g2.drawString("" + i, 30, y - i * scale);
         }
         int count = 1;
+        int x1;
+        int y1;
         for (int key : sortedData.keySet()) {
-            int x1 = x + count * xInc;
-            int y1 = height - 50 - (int) Math.round(sortedData.get(key) * scale);
+            x1 = x + count * xInc;
+            y1 = height - 50 - (int) Math.round(sortedData.get(key) * scale);
             g2.fill(new Ellipse2D.Double(x1 - 2, y1 - 2, 4, 4));
-            g2.drawString("" + key, x1 - 5, y1 - 5);
+            g2.drawString("" + key, x1 -5, y + 30);
             count++;
         }
     }
