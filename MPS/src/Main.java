@@ -2,9 +2,7 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.awt.*;
 import javax.swing.*;
-import java.awt.geom.*;
 public class Main {
     public static void main(String[] args) {
         File treeModel = new File("src/resources/treeModel.txt");
