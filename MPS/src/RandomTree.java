@@ -6,6 +6,11 @@ public class RandomTree {
     private ArrayList<Integer> eqs;
     private int numOfPoints;
 
+    /**
+     * Instantiates a random tree
+     * @param numOfNodes
+     * @param numOfPoints
+     */
     public RandomTree(int numOfNodes, int numOfPoints) {
         this.numOfNodes = numOfNodes;
         this.tree = new ArrayList<>();
@@ -13,6 +18,9 @@ public class RandomTree {
         this.numOfPoints = numOfPoints;
     }
 
+    /**
+     * Creates a tree
+     */
     public void createTree() {
         ArrayList<Integer> thresholds = new ArrayList<>();
         Random rand = new Random();
