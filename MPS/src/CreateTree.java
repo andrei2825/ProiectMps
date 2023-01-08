@@ -3,8 +3,9 @@ public class CreateTree {
     public ArrayList<Double> selectThresholds(ArrayList<Double> data, ArrayList<Integer> indexes) {
         int numOfThresholds = data.size();
         ArrayList<Double> thresholds = new ArrayList<>();
+        double threshold;
         for (int index : indexes) {
-            double threshold = data.get(index);
+            threshold = data.get(index);
             if (!thresholds.contains(threshold)) {
                 thresholds.add(threshold);
             }
