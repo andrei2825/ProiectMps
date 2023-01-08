@@ -8,6 +8,13 @@ public class FileProcessorLocal implements Runnable{
     private ArrayList<ArrayList<Integer>> tree;
     private ArrayList<Integer> eqs;
 
+    /**
+     * Instantiates a file processor
+     * @param complexity
+     * @param file
+     * @param tree
+     * @param eqs
+     */
     public FileProcessorLocal(int complexity , File file, ArrayList<ArrayList<Integer>> tree, ArrayList<Integer> eqs) {
         this.complexity = complexity;
         this.file = file;
@@ -63,6 +70,11 @@ public class FileProcessorLocal implements Runnable{
         }
     }
 
+    /**
+     * Processes a list of files from a directory
+     * @param dir
+     * @param executor
+     */
     public void processLocalFileData(File dir, Executor executor) {
         File[] listOfFiles = dir.listFiles();
         assert listOfFiles != null;
@@ -73,7 +85,4 @@ public class FileProcessorLocal implements Runnable{
             }
         }
     }
-
-
-
 }
