@@ -9,6 +9,13 @@ public class FileProcessor implements Runnable{
     private ArrayList<ArrayList<Integer>> tree;
     private ArrayList<Integer> eqs;
 
+    /**
+     * Instantiates a file processor
+     * @param complexity
+     * @param file
+     * @param tree
+     * @param eqs
+     */
     public FileProcessor(int complexity , File file, ArrayList<ArrayList<Integer>> tree, ArrayList<Integer> eqs) {
         this.complexity = complexity;
         this.fMeasures = new ArrayList<>();
@@ -49,6 +56,11 @@ public class FileProcessor implements Runnable{
         }
     }
 
+    /**
+     * Processes a list of files from a directory
+     * @param dir
+     * @param executor
+     */
     public void processFileData(File dir, Executor executor) {
         File[] listOfFiles = dir.listFiles();
         assert listOfFiles != null;
@@ -59,7 +71,4 @@ public class FileProcessor implements Runnable{
             }
         }
     }
-
-
-
 }
