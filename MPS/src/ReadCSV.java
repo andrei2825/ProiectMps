@@ -10,6 +10,9 @@ public class ReadCSV {
     public double idealThreshold;
     public double idealLocalThreshold;
 
+    /**
+     * Instantiates a CSV reader
+     */
     public ReadCSV() {
         this.thresholds = new ArrayList<>();
         this.FMeasure = new ArrayList<>();
@@ -18,6 +21,10 @@ public class ReadCSV {
         this.localThresholds = new ArrayList<>();
     }
 
+    /**
+     * Reads the content of a file and stores it as content in the CSV Reader
+     * @param fileName
+     */
     public void read(String fileName) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(fileName));
