@@ -6,11 +6,11 @@ public class RandomTree {
     private ArrayList<Integer> eqs;
     private int numOfPoints;
 
-    public RandomTree(int numOfNodes) {
+    public RandomTree(int numOfNodes, int numOfPoints) {
         this.numOfNodes = numOfNodes;
         this.tree = new ArrayList<>();
         this.eqs = new ArrayList<>();
-        numOfPoints = 15;
+        this.numOfPoints = numOfPoints;
     }
 
     public void createTree() {
