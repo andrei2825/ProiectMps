@@ -126,9 +126,10 @@ public class Main {
                         try {
                             fileWriter = new FileWriter(treeModel.getPath(), true);
                             bufferedWriter = new BufferedWriter(fileWriter);
-                            for (i = 0; i < randomTree.getTree().size(); i++) {
+                            bufferedWriter.write("Node 0: " + randomTree.getTree().get(0) + "\n");
+                            for (i = 1; i < randomTree.getTree().size(); i++) {
                                 bufferedWriter.write("Node " + i + ": " + randomTree.getTree().get(i) + "\n");
-                                bufferedWriter.write("Equation: " + randomTree.getEqs().get(i - 1) + "\n");
+                                bufferedWriter.write("Equation: " + randomTree.getEqs().get(i-1) + "\n");
                             }
                             bufferedWriter.write(mean + "");
                             bufferedWriter.close();
@@ -241,9 +242,10 @@ public class Main {
                         try {
                             fileWriter = new FileWriter(treeModel2.getPath(), true);
                             bufferedWriter = new BufferedWriter(fileWriter);
-                            for (i = 0; i < randomTree.getTree().size(); i++) {
+                            bufferedWriter.write("Node 0: " + randomTree.getTree().get(0) + "\n");
+                            for (i = 1; i < randomTree.getTree().size(); i++) {
                                 bufferedWriter.write("Node " + i + ": " + randomTree.getTree().get(i) + "\n");
-                                bufferedWriter.write("Equation: " + randomTree.getEqs().get(i - 1) + "\n");
+                                bufferedWriter.write("Equation: " + randomTree.getEqs().get(i-1) + "\n");
                             }
                             bufferedWriter.write(newResult + "");
                             bufferedWriter.close();
