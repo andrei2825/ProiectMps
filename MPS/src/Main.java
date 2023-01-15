@@ -3,7 +3,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import javax.swing.*;
+
 public class Main {
     public static void main(String[] args) throws InterruptedException {
         int i;
@@ -17,7 +17,10 @@ public class Main {
         double oldMean = 0;
         int sampleCount = 0;
         int sampleSize = 100;
-        Random r;
+        double averageTimeGlobal = 0;
+        int timeCount = 0;
+        double averageTimeLocal = 0;
+        double avgResult;
         String dir;
         String line;
         File folder;
@@ -31,16 +34,14 @@ public class Main {
         FileProcessorLocal fileProcessorLocal;
         ArrayList<Double> fMeasures;
         BufferedWriter bufferedWriter;
-        LinkedHashMap<Integer, Double> data;
         Scanner scanner = new Scanner(System.in);
         ArrayList<Double> means = new ArrayList<>();
-        ArrayList<Integer> complexities = new ArrayList<>();
 
         System.out.println("Pick 1 for the global thresholding algorithm or 2 for the local thresholding algorithm.");
         int choice = scanner.nextInt();
 
         switch (choice) {
-            case 1:
+            case 1 -> {
                 File treeModel = new File("src/resources/treeModel.txt");
                 while (oldMean < 97) {
                     System.out.println("Sample count: " + sampleCount);
@@ -71,12 +72,9 @@ public class Main {
                     readCSV = new ReadCSV();
                     dir = "src/resources/global_data";
                     folder = new File(dir);
-                    r = new Random();
-                    complexity = r.nextInt(5, 51);
-                    System.out.println(complexity);
+                    complexity = 10;
                     randomTree = new RandomTree(complexity, 15);
                     randomTree.createTree();
-
 
 
                     processors = Runtime.getRuntime().availableProcessors();
@@ -86,7 +84,12 @@ public class Main {
                     fileProcessor = new FileProcessor(complexity, folder, randomTree.getTree(), randomTree.getEqs());
                     fileProcessor.processFileData(folder, executor);
                     executor.shutdown();
-                    endTime = System.nanoTime();
+                    if (executor.awaitTermination(1, TimeUnit.DAYS))
+                        endTime = System.nanoTime();
+                    else
+                        return;
+                    averageTimeGlobal += (endTime - startTime) / 1000000000.0;
+                    timeCount++;
                     System.out.println("Time: " + (endTime - startTime) / 1000000000.0);
                     fMeasures = readCSV.getFMeasure();
                     try {
@@ -106,7 +109,7 @@ public class Main {
                     for (Double fMeasure : fMeasures) {
                         mean += fMeasure;
                     }
-                    mean = mean/fMeasures.size();
+                    mean = mean / fMeasures.size();
                     System.out.println("Mean: " + mean);
                     System.out.println("Old Mean: " + oldMean);
 
@@ -123,12 +126,11 @@ public class Main {
                         try {
                             fileWriter = new FileWriter(treeModel.getPath(), true);
                             bufferedWriter = new BufferedWriter(fileWriter);
-                            bufferedWriter.write("Thresholds: " + randomTree.getTree().get(0) + "\n");
-                            for (i = 1; i < randomTree.getTree().size(); i++) {
-                                bufferedWriter.write("Node "+ i + ": " + randomTree.getTree().get(i) + "\n");
-                                bufferedWriter.write("Equation: " + randomTree.getEqs().get(i-1) + "\n");
+                            for (i = 0; i < randomTree.getTree().size(); i++) {
+                                bufferedWriter.write("Node " + i + ": " + randomTree.getTree().get(i) + "\n");
+                                bufferedWriter.write("Equation: " + randomTree.getEqs().get(i - 1) + "\n");
                             }
-                            bufferedWriter.write( mean + "");
+                            bufferedWriter.write(mean + "");
                             bufferedWriter.close();
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -138,7 +140,6 @@ public class Main {
                     } else {
                         System.out.println("The old tree is better");
                     }
-                    complexities.add(complexity);
                     means.add(mean);
                     sampleCount += 1;
                     if (sampleCount == sampleSize) {
@@ -146,34 +147,17 @@ public class Main {
                         break;
                     }
                 }
-
-
-
-//        create hashmap of complexity and mean
-                data = new LinkedHashMap<>();
-                for (i = 0; i < complexities.size(); i++) {
-                    if (data.containsKey(complexities.get(i))) {
-                        if (means.get(i) > data.get(complexities.get(i))) {
-                            data.put(complexities.get(i), means.get(i));
-                        }
-                    } else {
-                        data.put(complexities.get(i), means.get(i));
-                    }
-                }
-                JFrame frame = new JFrame("Complexity vs Mean");
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.add(new Plot(data));
-                frame.setSize(800, 800);
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
-                break;
-
-
-
-
-            case 2:
+                avgResult = means.stream().mapToDouble(val -> val).average().orElse(0.0);
+                System.out.println("Average result: " + avgResult);
+                averageTimeGlobal = averageTimeGlobal / timeCount;
+                System.out.println("Average time: " + averageTimeGlobal);
+            }
+            case 2 -> {
                 File treeModel2 = new File("src/resources/treeModel2.txt");
+                int maxIterations = 100;
                 while (oldResult < 90) {
+                    System.out.println("Sample count: " + sampleCount);
+                    sampleCount += 1;
                     try {
                         br = new BufferedReader(new FileReader(treeModel2.getPath()));
                         line = br.readLine();
@@ -199,8 +183,7 @@ public class Main {
                     }
                     dir = "src/resources/local_data";
                     folder = new File(dir);
-                    r = new Random();
-                    complexity = r.nextInt(5, 10);
+                    complexity = 10;
                     System.out.println(complexity);
                     randomTree = new RandomTree(complexity, 9);
                     randomTree.createTree();
@@ -211,8 +194,12 @@ public class Main {
                     fileProcessorLocal = new FileProcessorLocal(complexity, folder, randomTree.getTree(), randomTree.getEqs());
                     fileProcessorLocal.processLocalFileData(folder, executor);
                     executor.shutdown();
-                    executor.awaitTermination(1, TimeUnit.DAYS);
-                    endTime = System.nanoTime();
+                    if (executor.awaitTermination(1, TimeUnit.DAYS))
+                        endTime = System.nanoTime();
+                    else
+                        return;
+                    averageTimeLocal += (endTime - startTime) / 1000000000.0;
+                    timeCount++;
                     System.out.println("Time: " + (endTime - startTime) / 1000000000.0);
                     ArrayList<Double> successRates = new ArrayList<>();
                     try {
@@ -238,7 +225,7 @@ public class Main {
                             newResult += successRate;
                         }
                     }
-                    newResult = newResult/size;
+                    newResult = newResult / size;
                     System.out.println("New Success Rate: " + newResult);
 
                     if (newResult >= oldResult) {
@@ -254,12 +241,11 @@ public class Main {
                         try {
                             fileWriter = new FileWriter(treeModel2.getPath(), true);
                             bufferedWriter = new BufferedWriter(fileWriter);
-                            bufferedWriter.write("Thresholds: " + randomTree.getTree().get(0) + "\n");
-                            for (i = 1; i < randomTree.getTree().size(); i++) {
-                                bufferedWriter.write("Node "+ i + ": " + randomTree.getTree().get(i) + "\n");
-                                bufferedWriter.write("Equation: " + randomTree.getEqs().get(i-1) + "\n");
+                            for (i = 0; i < randomTree.getTree().size(); i++) {
+                                bufferedWriter.write("Node " + i + ": " + randomTree.getTree().get(i) + "\n");
+                                bufferedWriter.write("Equation: " + randomTree.getEqs().get(i - 1) + "\n");
                             }
-                            bufferedWriter.write( newResult + "");
+                            bufferedWriter.write(newResult + "");
                             bufferedWriter.close();
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -269,19 +255,25 @@ public class Main {
                     } else {
                         System.out.println("The old tree is better");
                     }
-                    complexities.add(complexity);
                     means.add(newResult);
                     sampleCount += 1;
                     if (sampleCount == sampleSize) {
                         System.out.println("Sample size reached");
                         break;
                     }
+                    maxIterations -= 1;
+                    if (maxIterations == 0) {
+                        System.out.println("Max iterations reached");
+                        break;
+                    }
                 }
-
-                break;
-            default:
-                // Invalid option was chosen
-                break;
+                avgResult = means.stream().mapToDouble(val -> val).average().orElse(0.0);
+                System.out.println("Average result: " + avgResult);
+                averageTimeLocal = averageTimeLocal / timeCount;
+                System.out.println("Average time: " + averageTimeLocal);
+            }
+            default -> System.out.println("Invalid option");
+            // Invalid option was chosen
         }
     }
 }
